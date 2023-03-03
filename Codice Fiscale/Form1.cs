@@ -8,6 +8,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml.Linq;
+using Tecnosoftware.CodiceFiscale;
 
 namespace Codice_Fiscale
 {
@@ -17,6 +19,8 @@ namespace Codice_Fiscale
         {
             InitializeComponent();
 
+            var CalcoliEffettuali = new List<CodiceFiscale>();
+            var History = new History();
             //Aggiungere storico.
         }
 
@@ -37,14 +41,26 @@ namespace Codice_Fiscale
             //input_Cognome.Text
             //Input_comune_di_nascita.Value;
 
+
             var nome = Input_Nome.Text;
             var cognome = Input_Cognome.Text;
             var sesso = Maschio.Checked ? "M" : "F";
             var dataDiNascita = dateTimePicker_Data_di_nascita.Value;
             var comune = (Comune)Input_comune_di_nascita.SelectedItem;
             //la richiamerei con Comune.Codice
-            var calcolatoreCF = new Tecnosoftware.CodiceFiscale.CodiceFiscale(cognome, nome , dataDiNascita ,comune.Codice , sesso);
-            MessageBox.Show(calcolatoreCF.estraiCF());
+            var calcolatoreCF = new Tecnosoftware.CodiceFiscale.CodiceFiscale(cognome, nome, dataDiNascita, comune.Codice, sesso);
+            var element = calcolatoreCF.estraiCF();
+            MessageBox.Show(element);
+
+            //aggiungo l'elemento al CSV
+
+            using (var sw = new StreamWriter("C:\\Users\\davide.luporini\\source\\repos\\Codice Fiscale\\Codice Fiscale\\HistoryDB.csv", true))
+            {
+                sw.WriteLine($"{element}");
+            }
+
+
+
         }
 
         private void Input_Cognome_TextChanged(object sender, EventArgs e)
@@ -75,6 +91,39 @@ namespace Codice_Fiscale
 
             Input_comune_di_nascita.DisplayMember = "Nome";
             Input_comune_di_nascita.DataSource = listaComuni;
+
+        }
+
+        private void Storico_Click(object sender, EventArgs e)
+        {
+
+            var listaRicerche = new List<string>();
+            var allLines = File.ReadAllLines("C:\\Users\\davide.luporini\\source\\repos\\Codice Fiscale\\Codice Fiscale\\HistoryDB.csv");
+
+            foreach (var line in allLines)
+            {
+                var split = line.Split(',');
+                listaRicerche.Add(line);
+            }
+            history_list.DataSource = listaRicerche;
+            //ogni volta che leggo una lista la aggiungo alla lista
+            if (Storico.Text == "Storico ricerche")
+            {
+                Storico.Text = "Chiudi Storico";
+                history_list.Size = new Size(300, 100);
+
+            }
+            else
+            {
+                Storico.Text = "Storico ricerche";
+                history_list.Size = new Size(0, 0);
+
+            }
+
+        }
+
+        private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
 
         }
     }
