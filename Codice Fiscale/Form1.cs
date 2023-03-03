@@ -17,23 +17,7 @@ namespace Codice_Fiscale
         {
             InitializeComponent();
 
-
-            string path = "C:\\Users\\davide.luporini\\Desktop\\csv";
-
-            using (var reader = new StreamReader(path))
-            {
-                List<string> cities = new List<string>();
-                string line;
-                while((line = reader.ReadLine()) != null)
-                {
-                    var values = line.Split(' ');
-
-                    cities.Add(values[0]);
-                }
-            }
-
-
-
+            //Aggiungere storico.
         }
 
         private void Input_Nome_TextChanged(object sender, EventArgs e)
@@ -52,6 +36,15 @@ namespace Codice_Fiscale
             //Input_Nome.Text;
             //input_Cognome.Text
             //Input_comune_di_nascita.Value;
+
+            var nome = Input_Nome.Text;
+            var cognome = Input_Cognome.Text;
+            var sesso = Maschio.Checked ? "M" : "F";
+            var dataDiNascita = dateTimePicker_Data_di_nascita.Value;
+            var comune = (Comune)Input_comune_di_nascita.SelectedItem;
+            //la richiamerei con Comune.Codice
+            var calcolatoreCF = new Tecnosoftware.CodiceFiscale.CodiceFiscale(cognome, nome , dataDiNascita ,comune.Codice , sesso);
+            MessageBox.Show(calcolatoreCF.estraiCF());
         }
 
         private void Input_Cognome_TextChanged(object sender, EventArgs e)
@@ -66,6 +59,22 @@ namespace Codice_Fiscale
 
         private void Sesso_Enter(object sender, EventArgs e)
         {
+
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            var listaComuni = new List<Comune>();
+            var allLines = File.ReadAllLines("C:\\Users\\davide.luporini\\Desktop\\csv\\ElencoComuni.csv");
+
+            foreach (var line in allLines)
+            {
+                var split = line.Split(',');
+                listaComuni.Add(new Comune(split[0], split[1]));
+            }
+
+            Input_comune_di_nascita.DisplayMember = "Nome";
+            Input_comune_di_nascita.DataSource = listaComuni;
 
         }
     }

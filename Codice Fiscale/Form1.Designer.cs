@@ -153,7 +153,7 @@
             this.Input_comune_di_nascita.FormattingEnabled = true;
             this.Input_comune_di_nascita.Location = new System.Drawing.Point(371, 37);
             this.Input_comune_di_nascita.Name = "Input_comune_di_nascita";
-            this.Input_comune_di_nascita.Size = new System.Drawing.Size(121, 28);
+            this.Input_comune_di_nascita.Size = new System.Drawing.Size(248, 28);
             this.Input_comune_di_nascita.TabIndex = 10;
             this.Input_comune_di_nascita.SelectedIndexChanged += new System.EventHandler(this.Input_comune_di_nascita_SelectedIndexChanged);
             // 
@@ -174,6 +174,7 @@
             this.Controls.Add(this.Sesso);
             this.Name = "Form1";
             this.Text = "Form1";
+            this.Load += new System.EventHandler(this.Form1_Load);
             this.Sesso.ResumeLayout(false);
             this.Sesso.PerformLayout();
             this.ResumeLayout(false);
